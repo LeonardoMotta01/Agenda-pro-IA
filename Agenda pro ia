@@ -1,73 +1,20 @@
-import 'package:flutter/material.dart';
-import 'package:table_calendar/table_calendar.dart';
-import 'package:speech_to_text/speech_to_text.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:timezone/data/latest.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
-import 'package:intl/intl.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  tz.initializeTimeZones();
-  runApp(AgendaProApp());
-}
-
-class AgendaProApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Agenda Pro IA',
-      theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: Colors.black,
-        primaryColor: Color(0xFF00FF88),
-      ),
-      home: HomePage(),
-    );
-  }
-}
-
-class HomePage extends StatefulWidget {
-  @override
-  _HomePageState createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  // (resto do código GIGANTE que te mandei antes)
-  CalendarFormat _calendarFormat = CalendarFormat.month;
-  DateTime _focusedDay = DateTime.now();
-  DateTime? _selectedDay;
-  Map<DateTime, List<Event>> _events = {};
-  final TextEditingController _eventController = TextEditingController();
-  final SpeechToText _speechToText = SpeechToText();
-  bool _isListening = false;
-  String _text = '';
-  final FlutterLocalNotificationsPlugin _notificationsPlugin = FlutterLocalNotificationsPlugin();
-
-  @override
-  void initState() {
-    super.initState();
-    _initSpeech();
-    _initNotifications();
-    _loadEvents();
-  }
-name: agenda_pro_ia
-description: Agenda Pro IA
-publish_to: 'none'
-version: 1.0.0+1
-environment:
-  sdk: '>=3.0.0 <4.0.0'
-dependencies:
-  flutter:
-    sdk: flutter
-  sqflite: ^2.3.2
-  path: ^1.8.3
-  table_calendar: ^3.0.9
-  speech_to_text: ^6.5.1
-  flutter_local_notifications: ^16.3.0
-  timezone: ^0.9.2
-  intl: ^0.19.0
-flutter:
-  uses-material-design: true
+name: Gerar APK
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+      - run: flutter pub get
+      - run: flutter build apk --release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: app-release
+          path: build/app/outputs/flutter-apk/app-release.apk
