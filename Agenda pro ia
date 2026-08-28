@@ -12,18 +12,9 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-      - name: Achar projeto Flutter
-        run: |
-          echo "Procurando pubspec.yaml..."
-          find. -name "pubspec.yaml"
-          PROJECT_DIR=$(find. -name "pubspec.yaml" | head -n 1 | xargs dirname)
-          echo "PROJECT_DIR=$PROJECT_DIR" >> $GITHUB_ENV
-          echo "Achou em: $PROJECT_DIR"
-      - name: Baixar pacotes
-        run: cd $PROJECT_DIR && flutter pub get
-      - name: Gerar APK
-        run: cd $PROJECT_DIR && flutter build apk --release
+      - run: cd agenda_pro_ia && flutter pub get
+      - run: cd agenda_pro_ia && flutter build apk --release
       - uses: actions/upload-artifact@v4
         with:
           name: app-release
-          path: ${{ env.PROJECT_DIR }}/build/app/outputs/flutter-apk/app-release.apk
+          path: agenda_pro_ia/build/app/outputs/flutter-apk/app-release.apk
