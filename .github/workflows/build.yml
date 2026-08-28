@@ -1,20 +1,21 @@
+
 name: Gerar APK
 on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
-          java-version: '12'
+          java-version: '17'
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.0'
-      - run: flutter pub get
-      - run: flutter build apk --release
+          channel: 'stable'
+      - run: cd agenda_pro_ia && flutter pub get
+      - run: cd agenda_pro_ia && flutter build apk --release
       - uses: actions/upload-artifact@v4
         with:
           name: app-release
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: agenda_pro_ia/build/app/outputs/flutter-apk/app-release.apk
